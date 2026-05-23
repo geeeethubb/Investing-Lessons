@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pennywise Stocks</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow" id="today-label">Morning dashboard</p>
+          <h1>Pennywise Stocks</h1>
+        </div>
+        <div class="account-pill">
+          <span id="portfolio-value">$0.00</span>
+          <small id="portfolio-change">Add holdings to track performance</small>
+        </div>
+      </header>
+
+      <section class="hero-grid">
+        <article class="lesson-panel" aria-labelledby="lesson-title">
+          <div class="panel-heading">
+            <p class="eyebrow">Mini lesson</p>
+            <span id="lesson-time">4 min read</span>
+          </div>
+          <h2 id="lesson-title">Start small, think like an owner</h2>
+          <p id="lesson-body"></p>
+          <div class="lesson-actions">
+            <button class="icon-button" id="previous-lesson" aria-label="Previous lesson" title="Previous lesson">‹</button>
+            <button id="mark-read" class="primary-action">Mark read</button>
+            <button class="icon-button" id="next-lesson" aria-label="Next lesson" title="Next lesson">›</button>
+          </div>
+        </article>
+
+        <section class="portfolio-panel" aria-labelledby="portfolio-title">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Portfolio</p>
+              <h2 id="portfolio-title">Your holdings</h2>
+            </div>
+            <button id="refresh-quotes" class="ghost-action">Refresh</button>
+          </div>
+          <form id="holding-form" class="holding-form">
+            <label>
+              Symbol
+              <input id="symbol-input" maxlength="8" placeholder="AAPL" required />
+            </label>
+            <label>
+              Shares
+              <input id="shares-input" type="number" min="0.001" step="0.001" placeholder="0.5" required />
+            </label>
+            <label>
+              Avg cost
+              <input id="cost-input" type="number" min="0" step="0.01" placeholder="185" />
+            </label>
+            <button class="primary-action" type="submit">Add</button>
+          </form>
+          <div class="holding-list" id="holding-list"></div>
+          <p class="quiet-copy" id="quote-status">Live quotes load after deployment. Local preview uses a fallback if the API is unavailable.</p>
+        </section>
+      </section>
+
+      <section class="content-grid">
+        <section class="watchlist-panel" aria-labelledby="watchlist-title">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Daily research list</p>
+              <h2 id="watchlist-title">Stocks to look into today</h2>
+            </div>
+            <span id="watchlist-date"></span>
+          </div>
+          <div class="stock-grid" id="watchlist"></div>
+        </section>
+
+        <section class="company-panel" aria-labelledby="company-title">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Company insights</p>
+              <h2 id="company-title">Reports and signals</h2>
+            </div>
+          </div>
+          <form id="company-form" class="company-search">
+            <input id="company-symbol" maxlength="8" placeholder="Search a symbol, e.g. MSFT" />
+            <button class="primary-action" type="submit">Open</button>
+          </form>
+          <div id="company-insights" class="insight-box"></div>
+        </section>
+
+        <section class="rules-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Student guardrails</p>
+              <h2>Before you invest cash</h2>
+            </div>
+          </div>
+          <div class="rules-list">
+            <label><input type="checkbox" data-rule="emergency" /> I have money set aside for near-term school and living costs.</label>
+            <label><input type="checkbox" data-rule="fees" /> I checked trading fees, expense ratios, and account fees.</label>
+            <label><input type="checkbox" data-rule="diversify" /> I understand why one stock should not be my whole plan.</label>
+            <label><input type="checkbox" data-rule="timeline" /> I know whether this money can stay invested for years.</label>
+          </div>
+        </section>
+
+        <section class="email-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Morning reminder</p>
+              <h2>Email launch link</h2>
+            </div>
+          </div>
+          <p class="quiet-copy">
+            When this is deployed, your daily email can link straight to the public dashboard. A real scheduled email needs a deployed URL plus an email provider or Vercel Cron.
+          </p>
+          <a class="mail-link" id="email-link" href="mailto:zuyu.alex06@gmail.com">Prepare reminder email</a>
+        </section>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

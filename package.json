@@ -1,0 +1,22 @@
+{
+  "name": "pennywise-stocks",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A student-friendly stock learning dashboard with portfolio tracking, daily research ideas, and company report links.",
+  "scripts": {
+    "dev": "npx vercel dev",
+    "start": "npx vercel dev",
+    "check": "node --check app.js && node --check api/quote.js && node --check api/watchlist.js && node --check api/company.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "stocks",
+    "investing",
+    "portfolio",
+    "education"
+  ],
+  "license": "MIT"
+}
