@@ -28,9 +28,9 @@
           <h2 id="lesson-title">Start small, think like an owner</h2>
           <p id="lesson-body"></p>
           <div class="lesson-actions">
-            <button class="icon-button" id="previous-lesson" aria-label="Previous lesson" title="Previous lesson">‹</button>
+            <button class="icon-button" id="previous-lesson" aria-label="Previous lesson" title="Previous lesson">&lt;</button>
             <button id="mark-read" class="primary-action">Mark read</button>
-            <button class="icon-button" id="next-lesson" aria-label="Next lesson" title="Next lesson">›</button>
+            <button class="icon-button" id="next-lesson" aria-label="Next lesson" title="Next lesson">&gt;</button>
           </div>
         </article>
 
@@ -126,13 +126,20 @@
           <div class="panel-heading">
             <div>
               <p class="eyebrow">Morning reminder</p>
-              <h2>Email launch link</h2>
+              <h2>Active email reminder</h2>
             </div>
           </div>
-          <p class="quiet-copy">
-            When this is deployed, your daily email can link straight to the public dashboard. A real scheduled email needs a deployed URL plus an email provider or Vercel Cron.
-          </p>
-          <a class="mail-link" id="email-link" href="mailto:zuyu.alex06@gmail.com">Prepare reminder email</a>
+          <form id="reminder-form" class="reminder-form">
+            <label for="reminder-email">Send reminders to</label>
+            <input id="reminder-email" type="email" value="zuyu.alex06@gmail.com" required />
+            <label for="dashboard-url">Dashboard URL</label>
+            <input id="dashboard-url" type="url" placeholder="https://your-vercel-url.vercel.app" />
+            <div class="reminder-actions">
+              <button class="primary-action" type="submit">Save reminder</button>
+              <button class="ghost-action" id="send-test-reminder" type="button">Send test</button>
+            </div>
+          </form>
+          <p class="quiet-copy" id="reminder-status">Daily reminder is ready to configure.</p>
         </section>
       </section>
     </main>

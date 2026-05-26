@@ -204,10 +204,16 @@ h2 {
   font-weight: 800;
 }
 
-.mail-link {
+.mail-link,
+.reminder-actions {
   display: inline-flex;
   align-items: center;
-  margin-top: 1rem;
+}
+
+.reminder-actions {
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 0.2rem;
 }
 
 .ghost-action {
@@ -358,7 +364,8 @@ input {
   margin-top: 0;
 }
 
-.personalization-form {
+.personalization-form,
+.reminder-form {
   display: grid;
   gap: 0.75rem;
 }
