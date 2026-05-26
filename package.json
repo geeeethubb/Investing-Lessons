@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "npx vercel dev",
     "start": "npx vercel dev",
-    "check": "node --check app.js && node --check api/quote.js && node --check api/watchlist.js && node --check api/company.js && node --check api/send-reminder.js && node --check api/cron-morning-reminder.js && node --check api/reminder-email.js"
+    "check": "node --check app.js && node --check api/quote.js && node --check api/watchlist.js && node --check api/company.js"
   },
   "engines": {
     "node": ">=20"

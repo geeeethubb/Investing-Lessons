@@ -132,7 +132,6 @@ const storageKeys = {
   readDates: "pennywise-read-dates",
   rules: "pennywise-rules",
   preference: "pennywise-preference",
-  reminder: "pennywise-reminder",
 };
 
 const dateKey = new Date().toISOString().slice(0, 10);
@@ -163,11 +162,6 @@ const personalizationSummary = document.querySelector("#personalization-summary"
 const companyForm = document.querySelector("#company-form");
 const companySymbol = document.querySelector("#company-symbol");
 const companyInsights = document.querySelector("#company-insights");
-const reminderForm = document.querySelector("#reminder-form");
-const reminderEmail = document.querySelector("#reminder-email");
-const dashboardUrl = document.querySelector("#dashboard-url");
-const reminderStatus = document.querySelector("#reminder-status");
-const sendTestReminder = document.querySelector("#send-test-reminder");
 
 function money(value) {
   return new Intl.NumberFormat(undefined, { style: "currency", currency: "USD" }).format(value || 0);
@@ -384,56 +378,6 @@ function restoreChecklist() {
   });
 }
 
-function getReminderSettings() {
-  return JSON.parse(localStorage.getItem(storageKeys.reminder) || "{}");
-}
-
-function getDefaultDashboardUrl() {
-  return location.protocol.startsWith("http") ? location.origin : "";
-}
-
-function saveReminderSettings(settings) {
-  localStorage.setItem(storageKeys.reminder, JSON.stringify(settings));
-}
-
-function restoreReminderForm() {
-  const settings = getReminderSettings();
-  reminderEmail.value = settings.email || "zuyu.alex06@gmail.com";
-  dashboardUrl.value = settings.url || getDefaultDashboardUrl();
-  reminderStatus.textContent = settings.email
-    ? `Saved for ${settings.email}. Use Send test to verify delivery.`
-    : "Daily reminder is ready to configure.";
-}
-
-async function sendReminderEmail({ test = false } = {}) {
-  const settings = getReminderSettings();
-  const email = reminderEmail.value.trim() || settings.email;
-  const url = dashboardUrl.value.trim() || settings.url || getDefaultDashboardUrl();
-
-  if (!email || !url) {
-    reminderStatus.textContent = "Add your email and deployed dashboard URL first.";
-    return;
-  }
-
-  reminderStatus.textContent = test ? "Sending test reminder..." : "Sending reminder...";
-  sendTestReminder.disabled = true;
-
-  try {
-    const response = await fetch("/api/send-reminder", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, dashboardUrl: url, test }),
-    });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || "Reminder email failed.");
-    reminderStatus.textContent = data.message || "Reminder sent.";
-  } catch (error) {
-    reminderStatus.textContent = `${error.message} Add RESEND_API_KEY in Vercel to make sending active.`;
-  } finally {
-    sendTestReminder.disabled = false;
-  }
-}
-
 holdingForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const symbol = symbolInput.value.trim().toUpperCase().replace(".", "-");
@@ -467,25 +411,6 @@ companyForm.addEventListener("submit", (event) => {
   openCompany(companySymbol.value);
 });
 
-reminderForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const settings = {
-    email: reminderEmail.value.trim(),
-    url: dashboardUrl.value.trim() || getDefaultDashboardUrl(),
-  };
-  saveReminderSettings(settings);
-  reminderStatus.textContent = `Saved for ${settings.email}. Vercel Cron will use REMINDER_EMAIL for daily sends.`;
-});
-
-sendTestReminder.addEventListener("click", () => {
-  const settings = {
-    email: reminderEmail.value.trim(),
-    url: dashboardUrl.value.trim() || getDefaultDashboardUrl(),
-  };
-  saveReminderSettings(settings);
-  sendReminderEmail({ test: true });
-});
-
 preferenceInput.value = getPreference();
 personalizationForm.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -495,7 +420,6 @@ personalizationForm.addEventListener("submit", (event) => {
 
 renderLesson();
 restoreChecklist();
-restoreReminderForm();
 refreshPortfolio();
 renderWatchlist();
 openCompany("AAPL");

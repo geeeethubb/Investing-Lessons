@@ -1,12 +1,6 @@
 {
   "version": 2,
   "cleanUrls": true,
-  "crons": [
-    {
-      "path": "/api/cron-morning-reminder",
-      "schedule": "0 13 * * *"
-    }
-  ],
   "headers": [
     {
       "source": "/(.*)",
