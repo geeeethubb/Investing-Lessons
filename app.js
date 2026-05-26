@@ -62,10 +62,76 @@ const fallbackIdeas = [
   },
 ];
 
+const personalizedIdeas = [
+  {
+    symbol: "SOFI",
+    name: "SoFi Technologies",
+    why: "A lower-priced stock to research if you want to practice reading growth, losses or profits, banking risk, and whether a popular app can become a durable business.",
+    angle: "Cheaper share price, fintech, higher risk",
+    tags: ["cheap", "cheaper", "low price", "small", "student", "fintech"],
+  },
+  {
+    symbol: "F",
+    name: "Ford",
+    why: "A familiar lower-priced company for learning cyclical businesses, debt, electric vehicle spending, labor costs, and dividend sustainability.",
+    angle: "Cheaper share price, autos, cyclical risk",
+    tags: ["cheap", "cheaper", "dividend", "cars", "value"],
+  },
+  {
+    symbol: "SCHD",
+    name: "Schwab U.S. Dividend Equity ETF",
+    why: "A dividend-focused fund to compare against individual dividend stocks, especially if you want income, diversification, and lower single-company risk.",
+    angle: "ETF, dividends, diversification",
+    tags: ["dividend", "income", "etf", "fund", "mutual fund", "safer"],
+    linkLabel: "Fund page",
+    linkUrl: "https://finance.yahoo.com/quote/SCHD",
+  },
+  {
+    symbol: "VTI",
+    name: "Vanguard Total Stock Market ETF",
+    why: "A broad-market fund that works well as a benchmark before you pick individual stocks. It helps you ask whether your idea is worth taking extra risk.",
+    angle: "Broad market, low-cost fund, beginner baseline",
+    tags: ["mutual fund", "fund", "index", "etf", "safer", "beginner", "diversified"],
+    linkLabel: "Fund page",
+    linkUrl: "https://finance.yahoo.com/quote/VTI",
+  },
+  {
+    symbol: "FXAIX",
+    name: "Fidelity 500 Index Fund",
+    why: "A mutual fund example for studying expense ratios, S&P 500 exposure, minimums, and how mutual funds differ from ETFs.",
+    angle: "Mutual fund, S&P 500, expense ratios",
+    tags: ["mutual fund", "fund", "index", "fidelity", "s&p", "sp500"],
+    linkLabel: "Fund page",
+    linkUrl: "https://finance.yahoo.com/quote/FXAIX",
+  },
+  {
+    symbol: "NVDA",
+    name: "NVIDIA",
+    why: "A high-expectations company for learning how AI demand, valuation, margins, and supply constraints can all matter at the same time.",
+    angle: "AI, semiconductors, valuation risk",
+    tags: ["ai", "tech", "growth", "semiconductor", "chips"],
+  },
+  {
+    symbol: "PG",
+    name: "Procter & Gamble",
+    why: "A steadier consumer staples company for studying brands, pricing power, dividends, and defensive demand when the economy gets shaky.",
+    angle: "Defensive, consumer staples, dividends",
+    tags: ["safe", "safer", "defensive", "dividend", "stable"],
+  },
+  {
+    symbol: "DIS",
+    name: "Disney",
+    why: "A company you probably know that lets you study parks, streaming, media economics, debt, and whether brand strength turns into shareholder returns.",
+    angle: "Familiar brand, entertainment, turnaround",
+    tags: ["brands", "company i know", "familiar", "media", "consumer"],
+  },
+];
+
 const storageKeys = {
   holdings: "pennywise-holdings",
   readDates: "pennywise-read-dates",
   rules: "pennywise-rules",
+  preference: "pennywise-preference",
 };
 
 const dateKey = new Date().toISOString().slice(0, 10);
@@ -90,6 +156,9 @@ const quoteStatus = document.querySelector("#quote-status");
 const refreshQuotes = document.querySelector("#refresh-quotes");
 const watchlist = document.querySelector("#watchlist");
 const watchlistDate = document.querySelector("#watchlist-date");
+const personalizationForm = document.querySelector("#personalization-form");
+const preferenceInput = document.querySelector("#preference-input");
+const personalizationSummary = document.querySelector("#personalization-summary");
 const companyForm = document.querySelector("#company-form");
 const companySymbol = document.querySelector("#company-symbol");
 const companyInsights = document.querySelector("#company-insights");
@@ -213,10 +282,35 @@ async function renderWatchlist() {
     const response = await fetch("/api/watchlist");
     if (!response.ok) throw new Error("Watchlist API unavailable");
     const data = await response.json();
-    renderIdeas(data.ideas || fallbackIdeas);
+    renderIdeas(personalizeIdeas(data.ideas || fallbackIdeas));
   } catch {
-    renderIdeas(fallbackIdeas);
+    renderIdeas(personalizeIdeas(fallbackIdeas));
   }
+}
+
+function getPreference() {
+  return localStorage.getItem(storageKeys.preference) || "";
+}
+
+function personalizeIdeas(defaultIdeas) {
+  const preference = getPreference().trim();
+  if (!preference) {
+    personalizationSummary.textContent = "Using the default beginner research list.";
+    return defaultIdeas;
+  }
+
+  const normalized = preference.toLowerCase();
+  const matches = personalizedIdeas.filter((idea) => idea.tags.some((tag) => normalized.includes(tag)));
+  const selected = matches.length ? matches : personalizedIdeas.filter((idea) => normalized.split(/\W+/).some((word) => idea.tags.join(" ").includes(word)));
+  const ideas = [...selected, ...defaultIdeas].filter(
+    (idea, index, list) => list.findIndex((candidate) => candidate.symbol === idea.symbol) === index,
+  );
+
+  personalizationSummary.textContent = selected.length
+    ? `Personalized around: "${preference}"`
+    : `No exact match for "${preference}" yet, so I mixed in broad beginner ideas.`;
+
+  return ideas.slice(0, 3);
 }
 
 function renderIdeas(ideas) {
@@ -230,7 +324,7 @@ function renderIdeas(ideas) {
           </div>
           <p>${idea.why}</p>
           <span>${idea.angle}</span>
-          <a href="https://www.sec.gov/edgar/search/#/q=${encodeURIComponent(idea.symbol)}" target="_blank" rel="noreferrer">SEC filings</a>
+          <a href="${idea.linkUrl || `https://www.sec.gov/edgar/search/#/q=${encodeURIComponent(idea.symbol)}`}" target="_blank" rel="noreferrer">${idea.linkLabel || "SEC filings"}</a>
         </article>
       `,
     )
@@ -323,6 +417,13 @@ nextLesson.addEventListener("click", () => {
 companyForm.addEventListener("submit", (event) => {
   event.preventDefault();
   openCompany(companySymbol.value);
+});
+
+preferenceInput.value = getPreference();
+personalizationForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  localStorage.setItem(storageKeys.preference, preferenceInput.value.trim());
+  renderWatchlist();
 });
 
 renderLesson();

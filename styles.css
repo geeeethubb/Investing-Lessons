@@ -29,7 +29,8 @@ body {
 }
 
 button,
-input {
+input,
+textarea {
   font: inherit;
 }
 
@@ -49,6 +50,7 @@ a {
 .lesson-panel,
 .portfolio-panel,
 .watchlist-panel,
+.personalization-panel,
 .company-panel,
 .rules-panel,
 .email-panel {
@@ -132,6 +134,7 @@ h2 {
 .lesson-panel,
 .portfolio-panel,
 .watchlist-panel,
+.personalization-panel,
 .company-panel,
 .rules-panel,
 .email-panel {
@@ -345,13 +348,29 @@ input {
   font-weight: 800;
 }
 
-.company-search {
+.company-search,
+.personalization-form {
   align-items: stretch;
   margin-bottom: 1rem;
 }
 
 .company-search input {
   margin-top: 0;
+}
+
+.personalization-form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.8rem;
+  color: var(--ink);
+  background: var(--paper);
+  resize: vertical;
 }
 
 .insight-box {

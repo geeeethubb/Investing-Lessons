@@ -74,6 +74,25 @@
           <div class="stock-grid" id="watchlist"></div>
         </section>
 
+        <section class="personalization-panel" aria-labelledby="personalization-title">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Personalization</p>
+              <h2 id="personalization-title">What are you in the mood for?</h2>
+            </div>
+          </div>
+          <form id="personalization-form" class="personalization-form">
+            <label for="preference-input">Research mood</label>
+            <textarea
+              id="preference-input"
+              rows="4"
+              placeholder="Example: cheaper stocks, mutual funds, dividend companies, safer picks, AI, companies I know"
+            ></textarea>
+            <button class="primary-action" type="submit">Personalize</button>
+          </form>
+          <p class="quiet-copy" id="personalization-summary">Using the default beginner research list.</p>
+        </section>
+
         <section class="company-panel" aria-labelledby="company-title">
           <div class="panel-heading">
             <div>
