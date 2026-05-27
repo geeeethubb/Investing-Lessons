@@ -30,6 +30,7 @@ body {
 
 button,
 input,
+select,
 textarea {
   font: inherit;
 }
@@ -239,7 +240,7 @@ h2 {
 
 .holding-form {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr auto;
+  grid-template-columns: 1fr 1.05fr 1fr 1fr auto;
   margin-bottom: 1rem;
 }
 
@@ -249,7 +250,8 @@ label {
   font-weight: 800;
 }
 
-input {
+input,
+select {
   width: 100%;
   min-height: 2.85rem;
   border: 1px solid var(--line);

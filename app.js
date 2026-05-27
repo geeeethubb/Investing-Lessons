@@ -149,8 +149,11 @@ const previousLesson = document.querySelector("#previous-lesson");
 const nextLesson = document.querySelector("#next-lesson");
 const holdingForm = document.querySelector("#holding-form");
 const symbolInput = document.querySelector("#symbol-input");
-const sharesInput = document.querySelector("#shares-input");
+const holdingType = document.querySelector("#holding-type");
+const amountInput = document.querySelector("#amount-input");
+const amountLabel = document.querySelector("#amount-label");
 const costInput = document.querySelector("#cost-input");
+const costLabel = document.querySelector("#cost-label");
 const holdingList = document.querySelector("#holding-list");
 const quoteStatus = document.querySelector("#quote-status");
 const refreshQuotes = document.querySelector("#refresh-quotes");
@@ -184,6 +187,17 @@ function getHoldings() {
 
 function saveHoldings(holdings) {
   localStorage.setItem(storageKeys.holdings, JSON.stringify(holdings));
+}
+
+function normalizeHolding(holding) {
+  if (holding.mode === "dollars") return holding;
+  if (holding.amount && !holding.shares) return { ...holding, mode: "dollars" };
+  return {
+    symbol: holding.symbol,
+    mode: "shares",
+    shares: Number(holding.shares || 0),
+    cost: Number(holding.cost || 0),
+  };
 }
 
 function getReadDates() {
@@ -231,7 +245,7 @@ async function refreshPortfolio() {
 function renderPortfolio() {
   const holdings = getHoldings();
   if (!holdings.length) {
-    holdingList.innerHTML = `<div class="holding-card"><div><strong>No holdings yet</strong><span>Add a stock symbol, shares, and optional average cost to start tracking.</span></div></div>`;
+    holdingList.innerHTML = `<div class="holding-card"><div><strong>No holdings yet</strong><span>Add shares for stocks/ETFs, or a dollar amount for mutual/index funds.</span></div></div>`;
     portfolioValue.textContent = "$0.00";
     portfolioChange.textContent = "Add holdings to track performance";
     return;
@@ -241,22 +255,41 @@ function renderPortfolio() {
   let totalCost = 0;
   holdingList.innerHTML = holdings
     .map((holding, index) => {
-      const quote = quotes[holding.symbol] || fallbackQuotes[holding.symbol] || {};
+      const normalized = normalizeHolding(holding);
+      const quote = quotes[normalized.symbol] || fallbackQuotes[normalized.symbol] || {};
       const price = Number(quote.price || 0);
-      const value = price * holding.shares;
-      const basis = Number(holding.cost || 0) * holding.shares;
+      const basis =
+        normalized.mode === "dollars"
+          ? Number(normalized.amount || 0)
+          : Number(normalized.cost || 0) * Number(normalized.shares || 0);
+      const estimatedShares =
+        normalized.mode === "dollars" && normalized.cost
+          ? Number(normalized.amount || 0) / Number(normalized.cost)
+          : Number(normalized.shares || 0);
+      const hasLiveValue = Boolean(price && estimatedShares);
+      const value = hasLiveValue ? price * estimatedShares : basis;
       const gain = value - basis;
       totalValue += value;
       totalCost += basis;
       const gainClass = gain >= 0 ? "gain" : "loss";
+      const positionText =
+        normalized.mode === "dollars"
+          ? `${money(normalized.amount)} invested${normalized.cost ? ` - est. ${estimatedShares.toFixed(4)} shares` : ""}`
+          : `${normalized.shares} shares`;
+      const performanceText = basis
+        ? hasLiveValue
+          ? `${money(gain)} since entered basis`
+          : "Tracked at entered amount"
+        : `${percent(quote.changePercent)} today`;
+      const displayName = quote.name && quote.name !== normalized.symbol ? quote.name : "Manual position";
       return `
         <div class="holding-card">
           <div>
-            <strong>${holding.symbol}</strong>
-            <span>${quote.name || "Company"} - ${holding.shares} shares - ${money(price)} latest</span>
-            <span class="${gainClass}">${basis ? `${money(gain)} since avg cost` : `${percent(quote.changePercent)} today`}</span>
+            <strong>${normalized.symbol}</strong>
+            <span>${displayName} - ${positionText} - ${price ? `${money(price)} latest` : "manual value"}</span>
+            <span class="${gainClass}">${performanceText}</span>
           </div>
-          <button type="button" data-remove="${index}" aria-label="Remove ${holding.symbol}">x</button>
+          <button type="button" data-remove="${index}" aria-label="Remove ${normalized.symbol}">x</button>
         </div>
       `;
     })
@@ -273,6 +306,15 @@ function renderPortfolio() {
       refreshPortfolio();
     });
   });
+}
+
+function updateHoldingFormMode() {
+  const isDollarMode = holdingType.value === "dollars";
+  amountLabel.textContent = isDollarMode ? "Dollars invested" : "Shares";
+  amountInput.placeholder = isDollarMode ? "550" : "0.5";
+  amountInput.step = isDollarMode ? "0.01" : "0.001";
+  costLabel.textContent = isDollarMode ? "NAV at purchase" : "Avg cost";
+  costInput.placeholder = isDollarMode ? "optional" : "185";
 }
 
 async function renderWatchlist() {
@@ -381,15 +423,22 @@ function restoreChecklist() {
 holdingForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const symbol = symbolInput.value.trim().toUpperCase().replace(".", "-");
-  const shares = Number(sharesInput.value);
+  const mode = holdingType.value;
+  const amount = Number(amountInput.value);
   const cost = Number(costInput.value || 0);
-  if (!symbol || !shares) return;
-  saveHoldings([...getHoldings(), { symbol, shares, cost }]);
+  if (!symbol || !amount) return;
+  const holding =
+    mode === "dollars"
+      ? { symbol, mode, amount, cost }
+      : { symbol, mode, shares: amount, cost };
+  saveHoldings([...getHoldings(), holding]);
   holdingForm.reset();
+  updateHoldingFormMode();
   refreshPortfolio();
 });
 
 refreshQuotes.addEventListener("click", refreshPortfolio);
+holdingType.addEventListener("change", updateHoldingFormMode);
 
 markRead.addEventListener("click", () => {
   saveReadDates([...getReadDates(), dateKey]);
@@ -420,6 +469,7 @@ personalizationForm.addEventListener("submit", (event) => {
 
 renderLesson();
 restoreChecklist();
+updateHoldingFormMode();
 refreshPortfolio();
 renderWatchlist();
 openCompany("AAPL");

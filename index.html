@@ -48,11 +48,18 @@
               <input id="symbol-input" maxlength="8" placeholder="AAPL" required />
             </label>
             <label>
-              Shares
-              <input id="shares-input" type="number" min="0.001" step="0.001" placeholder="0.5" required />
+              Type
+              <select id="holding-type">
+                <option value="shares">Stock or ETF shares</option>
+                <option value="dollars">Fund dollar amount</option>
+              </select>
             </label>
             <label>
-              Avg cost
+              <span id="amount-label">Shares</span>
+              <input id="amount-input" type="number" min="0.01" step="0.001" placeholder="0.5" required />
+            </label>
+            <label>
+              <span id="cost-label">Avg cost</span>
               <input id="cost-input" type="number" min="0" step="0.01" placeholder="185" />
             </label>
             <button class="primary-action" type="submit">Add</button>
