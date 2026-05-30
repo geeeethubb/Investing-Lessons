@@ -29,6 +29,60 @@ const lessons = [
     body:
       "When a company interests you, write down the basic thesis: what it sells, how it earns money, why customers choose it, what could go wrong, and what price would make sense. Waiting a day before buying is a simple way to cool down hype.",
   },
+  {
+    title: "Revenue is the top line",
+    minutes: 4,
+    body:
+      "Revenue is the money a company brings in before expenses. When you read a report, ask whether revenue is growing because more customers are buying, prices are rising, a new product is working, or one temporary event boosted sales. Growth is better when you understand where it comes from.",
+  },
+  {
+    title: "Profit margins show quality",
+    minutes: 4,
+    body:
+      "A company can sell a lot and still struggle if expenses eat most of the money. Gross margin, operating margin, and net margin help you see how much revenue turns into profit. Rising margins can signal efficiency or pricing power; falling margins can warn that competition or costs are biting.",
+  },
+  {
+    title: "Cash flow keeps companies honest",
+    minutes: 5,
+    body:
+      "Net income is important, but cash flow shows whether money is actually coming in. For beginners, operating cash flow and free cash flow are useful reality checks. A business that reports profits but never produces cash deserves extra skepticism.",
+  },
+  {
+    title: "Valuation is expectations",
+    minutes: 4,
+    body:
+      "A stock price reflects what investors already expect. A great company can disappoint if the price assumes perfection. A boring company can do well if expectations are low and results are steady. When you research, ask: what does this price already assume about the future?",
+  },
+  {
+    title: "Diversification protects humility",
+    minutes: 3,
+    body:
+      "No one gets every investment right. Diversification is not admitting defeat; it is building a portfolio that survives mistakes. If one stock would wreck your plan, the position is probably too large for your current stage.",
+  },
+  {
+    title: "Dividends are not free money",
+    minutes: 4,
+    body:
+      "Dividends can be useful, but they come from company cash. A high dividend yield might mean a strong cash machine, or it might mean investors worry the payout will be cut. Check whether earnings and free cash flow comfortably cover the dividend.",
+  },
+  {
+    title: "Debt changes the risk",
+    minutes: 4,
+    body:
+      "Debt can help a business grow, but it also adds obligations. In a downturn, interest payments still come due. Look at total debt, cash, interest expense, and debt maturity dates. A company with too much debt has less room to make mistakes.",
+  },
+  {
+    title: "Share count matters",
+    minutes: 3,
+    body:
+      "If a company keeps issuing new shares, each existing share can represent a smaller ownership slice. Buybacks can do the opposite when done at sensible prices. Watch diluted shares outstanding over time so you know whether your ownership is being diluted or concentrated.",
+  },
+  {
+    title: "Build a thesis and a kill switch",
+    minutes: 5,
+    body:
+      "Before buying, write what would make you right and what would prove you wrong. A kill switch could be a broken growth story, worsening debt, shrinking margins, or management changing direction. This keeps you from turning every bad result into an excuse to keep holding.",
+  },
 ];
 
 const fallbackQuotes = {
@@ -256,12 +310,13 @@ const personalizedIdeas = [
 const storageKeys = {
   holdings: "pennywise-holdings",
   readDates: "pennywise-read-dates",
+  lessonProgress: "pennywise-lesson-progress",
   rules: "pennywise-rules",
   preference: "pennywise-preference",
 };
 
-const dateKey = new Date().toISOString().slice(0, 10);
-let currentLesson = getLessonIndexForToday();
+const dateKey = getLocalDateKey();
+let currentLesson = getInitialLessonIndex();
 let quotes = {};
 let budgetQuotes = {};
 
@@ -313,10 +368,56 @@ function percent(value) {
   return `${sign}${Number(value || 0).toFixed(2)}%`;
 }
 
-function getLessonIndexForToday() {
+function getLocalDateKey(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function getCalendarLessonIndex() {
   const start = new Date("2026-01-01T00:00:00");
   const day = Math.floor((new Date() - start) / 86400000);
   return Math.abs(day) % lessons.length;
+}
+
+function getLessonProgress() {
+  return JSON.parse(localStorage.getItem(storageKeys.lessonProgress) || "{}");
+}
+
+function saveLessonProgress(progress) {
+  localStorage.setItem(storageKeys.lessonProgress, JSON.stringify(progress));
+}
+
+function getInitialLessonIndex() {
+  const progress = getLessonProgress();
+
+  if (!Number.isInteger(progress.currentIndex)) {
+    const currentIndex = getCalendarLessonIndex();
+    saveLessonProgress({ currentIndex });
+    return currentIndex;
+  }
+
+  if (
+    progress.lastReadDate &&
+    progress.lastReadDate < dateKey &&
+    progress.lastCompletedIndex === progress.currentIndex
+  ) {
+    const currentIndex = (progress.currentIndex + 1) % lessons.length;
+    saveLessonProgress({
+      ...progress,
+      currentIndex,
+      lastCompletedIndex: null,
+    });
+    return currentIndex;
+  }
+
+  return progress.currentIndex % lessons.length;
+}
+
+function isCurrentLessonReadToday() {
+  const progress = getLessonProgress();
+  return progress.lastReadDate === dateKey && progress.lastCompletedIndex === currentLesson;
 }
 
 function getHoldings() {
@@ -356,7 +457,7 @@ function renderLesson() {
   lessonTime.textContent = `${lesson.minutes} min read`;
   lessonTitle.textContent = lesson.title;
   lessonBody.textContent = lesson.body;
-  markRead.textContent = getReadDates().includes(dateKey) ? "Read today" : "Mark read";
+  markRead.textContent = isCurrentLessonReadToday() ? "Read today" : "Mark read";
 }
 
 function switchTab(tabName) {
@@ -709,16 +810,30 @@ budgetForm.addEventListener("submit", (event) => {
 
 markRead.addEventListener("click", () => {
   saveReadDates([...getReadDates(), dateKey]);
+  saveLessonProgress({
+    ...getLessonProgress(),
+    currentIndex: currentLesson,
+    lastCompletedIndex: currentLesson,
+    lastReadDate: dateKey,
+  });
   renderLesson();
 });
 
 previousLesson.addEventListener("click", () => {
   currentLesson = (currentLesson - 1 + lessons.length) % lessons.length;
+  saveLessonProgress({
+    ...getLessonProgress(),
+    currentIndex: currentLesson,
+  });
   renderLesson();
 });
 
 nextLesson.addEventListener("click", () => {
   currentLesson = (currentLesson + 1) % lessons.length;
+  saveLessonProgress({
+    ...getLessonProgress(),
+    currentIndex: currentLesson,
+  });
   renderLesson();
 });
 
