@@ -89,15 +89,15 @@ p {
 
 h1 {
   margin-bottom: 0;
-  font-size: clamp(2rem, 5vw, 4.2rem);
+  font-size: clamp(2rem, 4vw, 3.4rem);
   line-height: 0.95;
   letter-spacing: 0;
 }
 
 h2 {
   margin-bottom: 0;
-  font-size: clamp(1.3rem, 3vw, 2rem);
-  line-height: 1.05;
+  font-size: clamp(1.3rem, 2.4vw, 1.8rem);
+  line-height: 1.15;
   letter-spacing: 0;
 }
 
@@ -143,7 +143,7 @@ h2 {
 .budget-panel,
 .sec-guide-panel,
 .sec-step-card {
-  padding: clamp(1rem, 2.6vw, 1.5rem);
+  padding: clamp(1.15rem, 2.5vw, 2rem);
 }
 
 .tabs {
@@ -218,8 +218,7 @@ h2 {
 .company-search,
 .budget-form,
 .sec-guide-form {
-  display: flex;
-  align-items: flex-end;
+  display: grid;
   gap: 0.7rem;
 }
 
@@ -284,6 +283,22 @@ h2 {
   margin-bottom: 1rem;
 }
 
+.budget-form {
+  grid-template-columns: minmax(12rem, 0.55fr) minmax(16rem, 0.8fr) auto;
+  max-width: 58rem;
+}
+
+.company-search,
+.sec-guide-form {
+  grid-template-columns: minmax(14rem, 1fr) auto;
+  max-width: 62rem;
+}
+
+.form-field {
+  display: grid;
+  gap: 0.35rem;
+}
+
 label {
   color: var(--ink);
   font-size: 0.86rem;
@@ -296,7 +311,7 @@ select {
   min-height: 2.85rem;
   border: 1px solid var(--line);
   border-radius: 8px;
-  margin-top: 0.35rem;
+  margin-top: 0;
   padding: 0 0.72rem;
   color: var(--ink);
   background: var(--paper);
@@ -368,9 +383,12 @@ select {
 }
 
 .stock-grid,
-.budget-results,
 .sec-step-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.budget-results {
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
 }
 
 .stock-card {
@@ -386,9 +404,8 @@ select {
 }
 
 .budget-card header {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.7rem;
+  display: grid;
+  gap: 0.35rem;
 }
 
 .budget-card em {
@@ -419,7 +436,6 @@ select {
 .personalization-form,
 .budget-form,
 .sec-guide-form {
-  align-items: stretch;
   margin-bottom: 1rem;
 }
 
@@ -462,6 +478,8 @@ textarea {
   display: flex;
   flex-wrap: wrap;
   gap: 0.8rem;
+  align-items: center;
+  margin-top: 0.5rem;
 }
 
 .sec-report-links a,
@@ -469,6 +487,17 @@ textarea {
 .sec-step-card a {
   color: var(--blue);
   font-weight: 800;
+}
+
+.sec-report-links a {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.45rem 0.75rem;
+  background: var(--paper);
+}
+
+.sec-report-links span {
+  flex-basis: 100%;
 }
 
 .rules-list label {
@@ -502,6 +531,13 @@ textarea {
   .sec-step-grid {
     grid-template-columns: 1fr;
   }
+
+  .budget-form,
+  .company-search,
+  .sec-guide-form {
+    grid-template-columns: 1fr;
+    max-width: none;
+  }
 }
 
 @media (max-width: 680px) {
@@ -518,11 +554,8 @@ textarea {
     grid-template-columns: 1fr;
   }
 
-  .lesson-actions,
-  .company-search,
-  .budget-form,
-  .sec-guide-form {
-    align-items: stretch;
-    flex-direction: column;
+  .lesson-actions {
+    grid-template-columns: repeat(3, auto);
+    justify-content: start;
   }
 }
