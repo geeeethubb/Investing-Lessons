@@ -53,7 +53,10 @@ a {
 .watchlist-panel,
 .personalization-panel,
 .company-panel,
-.rules-panel {
+.rules-panel,
+.budget-panel,
+.sec-guide-panel,
+.sec-step-card {
   background: rgba(255, 255, 255, 0.88);
   border: 1px solid rgba(215, 221, 231, 0.95);
   border-radius: 8px;
@@ -136,8 +139,43 @@ h2 {
 .watchlist-panel,
 .personalization-panel,
 .company-panel,
-.rules-panel {
+.rules-panel,
+.budget-panel,
+.sec-guide-panel,
+.sec-step-card {
   padding: clamp(1rem, 2.6vw, 1.5rem);
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tab-button {
+  min-height: 2.8rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0 1rem;
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--muted);
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.tab-button.active {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: white;
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: grid;
+  gap: 1.1rem;
 }
 
 .lesson-panel {
@@ -177,7 +215,9 @@ h2 {
 
 .lesson-actions,
 .holding-form,
-.company-search {
+.company-search,
+.budget-form,
+.sec-guide-form {
   display: flex;
   align-items: flex-end;
   gap: 0.7rem;
@@ -264,14 +304,18 @@ select {
 
 .holding-list,
 .stock-grid,
-.rules-list {
+.rules-list,
+.budget-results,
+.sec-step-grid {
   display: grid;
   gap: 0.75rem;
 }
 
 .holding-card,
 .stock-card,
-.insight-box {
+.insight-box,
+.budget-card,
+.sec-step-card {
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 0.9rem;
@@ -285,14 +329,18 @@ select {
 }
 
 .holding-card strong,
-.stock-card strong {
+.stock-card strong,
+.budget-card strong,
+.sec-step-card strong {
   display: block;
   font-size: 1.1rem;
 }
 
 .holding-card span,
 .stock-card span,
-.insight-box span {
+.insight-box span,
+.budget-card span,
+.sec-step-card span {
   color: var(--muted);
   font-size: 0.92rem;
   line-height: 1.45;
@@ -319,7 +367,9 @@ select {
   font-weight: 800;
 }
 
-.stock-grid {
+.stock-grid,
+.budget-results,
+.sec-step-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
@@ -327,6 +377,24 @@ select {
   display: grid;
   gap: 0.6rem;
   min-height: 14rem;
+}
+
+.budget-card,
+.sec-step-card {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.budget-card header {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.7rem;
+}
+
+.budget-card em {
+  color: var(--green);
+  font-style: normal;
+  font-weight: 800;
 }
 
 .stock-card:nth-child(2) {
@@ -348,7 +416,9 @@ select {
 }
 
 .company-search,
-.personalization-form {
+.personalization-form,
+.budget-form,
+.sec-guide-form {
   align-items: stretch;
   margin-bottom: 1rem;
 }
@@ -388,6 +458,19 @@ textarea {
   margin-top: 1rem;
 }
 
+.sec-report-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.sec-report-links a,
+.budget-card a,
+.sec-step-card a {
+  color: var(--blue);
+  font-weight: 800;
+}
+
 .rules-list label {
   display: flex;
   align-items: flex-start;
@@ -414,6 +497,11 @@ textarea {
   .stock-grid {
     grid-template-columns: 1fr;
   }
+
+  .budget-results,
+  .sec-step-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 680px) {
@@ -431,7 +519,10 @@ textarea {
   }
 
   .lesson-actions,
-  .company-search {
+  .company-search,
+  .budget-form,
+  .sec-guide-form {
     align-items: stretch;
+    flex-direction: column;
   }
 }

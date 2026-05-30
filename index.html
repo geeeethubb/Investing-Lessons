@@ -19,57 +19,89 @@
         </div>
       </header>
 
-      <section class="hero-grid">
-        <article class="lesson-panel" aria-labelledby="lesson-title">
-          <div class="panel-heading">
-            <p class="eyebrow">Mini lesson</p>
-            <span id="lesson-time">4 min read</span>
-          </div>
-          <h2 id="lesson-title">Start small, think like an owner</h2>
-          <p id="lesson-body"></p>
-          <div class="lesson-actions">
-            <button class="icon-button" id="previous-lesson" aria-label="Previous lesson" title="Previous lesson">&lt;</button>
-            <button id="mark-read" class="primary-action">Mark read</button>
-            <button class="icon-button" id="next-lesson" aria-label="Next lesson" title="Next lesson">&gt;</button>
-          </div>
-        </article>
+      <nav class="tabs" aria-label="Dashboard sections">
+        <button class="tab-button active" type="button" data-tab="home">Home</button>
+        <button class="tab-button" type="button" data-tab="research">Budget ideas</button>
+        <button class="tab-button" type="button" data-tab="sec">SEC report guide</button>
+      </nav>
 
-        <section class="portfolio-panel" aria-labelledby="portfolio-title">
-          <div class="panel-heading">
-            <div>
-              <p class="eyebrow">Portfolio</p>
-              <h2 id="portfolio-title">Your holdings</h2>
+      <section class="tab-panel active" id="home-tab" data-tab-panel="home">
+        <section class="hero-grid">
+          <article class="lesson-panel" aria-labelledby="lesson-title">
+            <div class="panel-heading">
+              <p class="eyebrow">Mini lesson</p>
+              <span id="lesson-time">4 min read</span>
             </div>
-            <button id="refresh-quotes" class="ghost-action">Refresh</button>
-          </div>
-          <form id="holding-form" class="holding-form">
-            <label>
-              Symbol
-              <input id="symbol-input" maxlength="8" placeholder="AAPL" required />
-            </label>
-            <label>
-              Type
-              <select id="holding-type">
-                <option value="shares">Stock or ETF shares</option>
-                <option value="dollars">Fund dollar amount</option>
-              </select>
-            </label>
-            <label>
-              <span id="amount-label">Shares</span>
-              <input id="amount-input" type="number" min="0.01" step="0.001" placeholder="0.5" required />
-            </label>
-            <label>
-              <span id="cost-label">Avg cost</span>
-              <input id="cost-input" type="number" min="0" step="0.01" placeholder="185" />
-            </label>
-            <button class="primary-action" type="submit">Add</button>
-          </form>
-          <div class="holding-list" id="holding-list"></div>
-          <p class="quiet-copy" id="quote-status">Live quotes load after deployment. Local preview uses a fallback if the API is unavailable.</p>
+            <h2 id="lesson-title">Start small, think like an owner</h2>
+            <p id="lesson-body"></p>
+            <div class="lesson-actions">
+              <button class="icon-button" id="previous-lesson" aria-label="Previous lesson" title="Previous lesson">&lt;</button>
+              <button id="mark-read" class="primary-action">Mark read</button>
+              <button class="icon-button" id="next-lesson" aria-label="Next lesson" title="Next lesson">&gt;</button>
+            </div>
+          </article>
+
+          <section class="portfolio-panel" aria-labelledby="portfolio-title">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Portfolio</p>
+                <h2 id="portfolio-title">Your holdings</h2>
+              </div>
+              <button id="refresh-quotes" class="ghost-action">Refresh</button>
+            </div>
+            <form id="holding-form" class="holding-form">
+              <label>
+                Symbol
+                <input id="symbol-input" maxlength="8" placeholder="AAPL" required />
+              </label>
+              <label>
+                Type
+                <select id="holding-type">
+                  <option value="shares">Stock or ETF shares</option>
+                  <option value="dollars">Fund dollar amount</option>
+                </select>
+              </label>
+              <label>
+                <span id="amount-label">Shares</span>
+                <input id="amount-input" type="number" min="0.01" step="0.001" placeholder="0.5" required />
+              </label>
+              <label>
+                <span id="cost-label">Avg cost</span>
+                <input id="cost-input" type="number" min="0" step="0.01" placeholder="185" />
+              </label>
+              <button class="primary-action" type="submit">Add</button>
+            </form>
+            <div class="holding-list" id="holding-list"></div>
+            <p class="quiet-copy" id="quote-status">Live quotes load after deployment. Local preview uses a fallback if the API is unavailable.</p>
+          </section>
         </section>
       </section>
 
-      <section class="content-grid">
+      <section class="tab-panel" id="research-tab" data-tab-panel="research">
+        <section class="budget-panel" aria-labelledby="budget-title">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Budget research</p>
+              <h2 id="budget-title">Find ideas within your budget</h2>
+            </div>
+          </div>
+          <form id="budget-form" class="budget-form">
+            <label for="budget-input">Available budget</label>
+            <input id="budget-input" type="number" min="1" step="1" value="100" />
+            <label for="budget-focus">Focus</label>
+            <select id="budget-focus">
+              <option value="balanced">Balanced beginner mix</option>
+              <option value="growth">Growth and tech</option>
+              <option value="dividend">Dividends and stability</option>
+              <option value="funds">Funds and ETFs</option>
+              <option value="cheap">Lower share prices</option>
+            </select>
+            <button class="primary-action" type="submit">Find 5 ideas</button>
+          </form>
+          <p class="quiet-copy" id="budget-summary">Enter a budget to generate research ideas. These are not buy recommendations.</p>
+          <div class="budget-results" id="budget-results"></div>
+        </section>
+
         <section class="watchlist-panel" aria-labelledby="watchlist-title">
           <div class="panel-heading">
             <div>
@@ -128,6 +160,25 @@
             <label><input type="checkbox" data-rule="timeline" /> I know whether this money can stay invested for years.</label>
           </div>
         </section>
+      </section>
+
+      <section class="tab-panel" id="sec-tab" data-tab-panel="sec">
+        <section class="sec-guide-panel" aria-labelledby="sec-guide-title">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">SEC report guide</p>
+              <h2 id="sec-guide-title">Learn how to read a 10-K</h2>
+            </div>
+          </div>
+          <form id="sec-guide-form" class="sec-guide-form">
+            <label for="sec-guide-symbol">Company symbol</label>
+            <input id="sec-guide-symbol" maxlength="8" placeholder="AAPL" value="AAPL" />
+            <button class="primary-action" type="submit">Load guide</button>
+          </form>
+          <div class="sec-report-links" id="sec-report-links"></div>
+        </section>
+
+        <section class="sec-step-grid" id="sec-step-grid"></section>
       </section>
     </main>
 

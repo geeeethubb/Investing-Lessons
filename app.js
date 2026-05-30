@@ -39,7 +39,133 @@ const fallbackQuotes = {
   COST: { price: 812.3, changePercent: -0.09, name: "Costco Wholesale" },
   NVDA: { price: 117.63, changePercent: 1.2, name: "NVIDIA Corporation" },
   BRK_B: { price: 412.54, changePercent: 0.12, name: "Berkshire Hathaway" },
+  "BRK-B": { price: 412.54, changePercent: 0.12, name: "Berkshire Hathaway" },
+  SOFI: { price: 8.62, changePercent: 0.15, name: "SoFi Technologies" },
+  F: { price: 12.18, changePercent: -0.2, name: "Ford Motor Company" },
+  T: { price: 18.44, changePercent: 0.05, name: "AT&T Inc." },
+  PFE: { price: 28.19, changePercent: 0.11, name: "Pfizer Inc." },
+  BAC: { price: 39.88, changePercent: 0.09, name: "Bank of America" },
+  KO: { price: 62.4, changePercent: 0.07, name: "Coca-Cola Company" },
+  DIS: { price: 101.28, changePercent: -0.12, name: "Walt Disney Company" },
+  PG: { price: 165.5, changePercent: 0.08, name: "Procter & Gamble" },
+  VTI: { price: 258.2, changePercent: 0.18, name: "Vanguard Total Stock Market ETF" },
+  SCHD: { price: 78.64, changePercent: 0.16, name: "Schwab U.S. Dividend Equity ETF" },
+  FXAIX: { price: 192.35, changePercent: 0.2, name: "Fidelity 500 Index Fund" },
 };
+
+const budgetUniverse = [
+  {
+    symbol: "SOFI",
+    name: "SoFi Technologies",
+    tags: ["cheap", "growth", "balanced"],
+    why: "A lower-priced fintech stock for learning growth, banking risk, profitability, and how a popular app tries to become a durable business.",
+  },
+  {
+    symbol: "F",
+    name: "Ford",
+    tags: ["cheap", "dividend", "balanced"],
+    why: "A familiar company with a lower share price where you can study cyclical demand, debt, EV investment, and dividends.",
+  },
+  {
+    symbol: "T",
+    name: "AT&T",
+    tags: ["cheap", "dividend"],
+    why: "A dividend-oriented telecom to study debt, cash flow, competition, and whether a high yield is actually sustainable.",
+  },
+  {
+    symbol: "PFE",
+    name: "Pfizer",
+    tags: ["cheap", "dividend", "balanced"],
+    why: "A healthcare stock for learning patent cliffs, drug pipelines, dividend coverage, and why revenue can change after one-time product booms.",
+  },
+  {
+    symbol: "BAC",
+    name: "Bank of America",
+    tags: ["cheap", "balanced"],
+    why: "A big bank to study interest rates, credit losses, deposits, and why banks behave differently from ordinary product companies.",
+  },
+  {
+    symbol: "KO",
+    name: "Coca-Cola",
+    tags: ["dividend", "balanced"],
+    why: "A classic brand business for studying pricing power, global distribution, margins, and steady dividend growth.",
+  },
+  {
+    symbol: "DIS",
+    name: "Disney",
+    tags: ["growth", "balanced"],
+    why: "A familiar company that teaches parks, streaming economics, media disruption, debt, and turnaround investing.",
+  },
+  {
+    symbol: "NVDA",
+    name: "NVIDIA",
+    tags: ["growth"],
+    why: "A high-expectations AI company where valuation, data-center demand, supply limits, and margins all matter.",
+  },
+  {
+    symbol: "SCHD",
+    name: "Schwab U.S. Dividend Equity ETF",
+    tags: ["funds", "dividend", "balanced"],
+    why: "A dividend ETF to compare against individual dividend stocks while reducing single-company risk.",
+  },
+  {
+    symbol: "VTI",
+    name: "Vanguard Total Stock Market ETF",
+    tags: ["funds", "balanced"],
+    why: "A broad-market ETF that works as a simple benchmark before taking extra risk on individual stocks.",
+  },
+  {
+    symbol: "FXAIX",
+    name: "Fidelity 500 Index Fund",
+    tags: ["funds"],
+    why: "An S&P 500 mutual fund for learning expense ratios, index exposure, and fund-style investing by dollar amount.",
+  },
+  {
+    symbol: "AAPL",
+    name: "Apple",
+    tags: ["growth", "balanced"],
+    why: "A consumer brand and services business where you can connect products you know to revenue, margins, and buybacks.",
+  },
+];
+
+const secSteps = [
+  {
+    title: "1. Start With Business",
+    section: "Item 1",
+    why: "This tells you what the company actually does, how it makes money, and what segments matter.",
+    lookFor: "Main products, customer types, geography, business segments, and whether revenue depends on one product or market.",
+  },
+  {
+    title: "2. Read Risk Factors Slowly",
+    section: "Item 1A",
+    why: "This is where the company lists what could go wrong. Some risks are boilerplate, but repeated or very specific risks matter.",
+    lookFor: "Customer concentration, debt, competition, regulation, supply constraints, cybersecurity, lawsuits, and dependence on key suppliers.",
+  },
+  {
+    title: "3. Compare Management Discussion",
+    section: "Item 7",
+    why: "Management explains why revenue, costs, margins, and cash flow changed. This is often more useful than the headline earnings number.",
+    lookFor: "Plain-English reasons for growth or decline, one-time events, margin pressure, capital spending, and management's tone.",
+  },
+  {
+    title: "4. Check The Income Statement",
+    section: "Financial Statements",
+    why: "The income statement shows sales, expenses, and profit. It helps you see whether the business is growing efficiently.",
+    lookFor: "Revenue trend, gross margin, operating income, net income, and whether profits grow with revenue.",
+  },
+  {
+    title: "5. Check Cash Flow",
+    section: "Cash Flow Statement",
+    why: "Cash flow shows whether profits are turning into actual cash. For beginners, this is a reality check.",
+    lookFor: "Operating cash flow, capital expenditures, free cash flow, buybacks, dividends, and debt repayment.",
+  },
+  {
+    title: "6. Scan Debt And Dilution",
+    section: "Balance Sheet / Notes",
+    why: "A company can look exciting but still be risky if debt is heavy or share count keeps rising.",
+    lookFor: "Cash, total debt, interest costs, debt due soon, share count, stock compensation, and new share issuance.",
+  },
+];
 
 const fallbackIdeas = [
   {
@@ -137,7 +263,10 @@ const storageKeys = {
 const dateKey = new Date().toISOString().slice(0, 10);
 let currentLesson = getLessonIndexForToday();
 let quotes = {};
+let budgetQuotes = {};
 
+const tabButtons = document.querySelectorAll("[data-tab]");
+const tabPanels = document.querySelectorAll("[data-tab-panel]");
 const todayLabel = document.querySelector("#today-label");
 const portfolioValue = document.querySelector("#portfolio-value");
 const portfolioChange = document.querySelector("#portfolio-change");
@@ -165,6 +294,15 @@ const personalizationSummary = document.querySelector("#personalization-summary"
 const companyForm = document.querySelector("#company-form");
 const companySymbol = document.querySelector("#company-symbol");
 const companyInsights = document.querySelector("#company-insights");
+const budgetForm = document.querySelector("#budget-form");
+const budgetInput = document.querySelector("#budget-input");
+const budgetFocus = document.querySelector("#budget-focus");
+const budgetSummary = document.querySelector("#budget-summary");
+const budgetResults = document.querySelector("#budget-results");
+const secGuideForm = document.querySelector("#sec-guide-form");
+const secGuideSymbol = document.querySelector("#sec-guide-symbol");
+const secReportLinks = document.querySelector("#sec-report-links");
+const secStepGrid = document.querySelector("#sec-step-grid");
 
 function money(value) {
   return new Intl.NumberFormat(undefined, { style: "currency", currency: "USD" }).format(value || 0);
@@ -221,16 +359,29 @@ function renderLesson() {
   markRead.textContent = getReadDates().includes(dateKey) ? "Read today" : "Mark read";
 }
 
-async function fetchQuotes(symbols) {
+function switchTab(tabName) {
+  tabButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.tab === tabName);
+  });
+  tabPanels.forEach((panel) => {
+    panel.classList.toggle("active", panel.dataset.tabPanel === tabName);
+  });
+}
+
+async function fetchQuotes(symbols, { updateStatus = true } = {}) {
   if (!symbols.length) return {};
   try {
     const response = await fetch(`/api/quote?symbols=${encodeURIComponent(symbols.join(","))}`);
     if (!response.ok) throw new Error("Quote API unavailable");
     const data = await response.json();
-    quoteStatus.textContent = `Quotes updated ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}.`;
+    if (updateStatus) {
+      quoteStatus.textContent = `Quotes updated ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}.`;
+    }
     return data.quotes || {};
   } catch {
-    quoteStatus.textContent = "Using demo quotes in local preview. Deploy to Vercel for live quote routes.";
+    if (updateStatus) {
+      quoteStatus.textContent = "Using demo quotes in local preview. Deploy to Vercel for live quote routes.";
+    }
     return Object.fromEntries(symbols.map((symbol) => [symbol, fallbackQuotes[symbol] || { price: 0, changePercent: 0, name: symbol }]));
   }
 }
@@ -315,6 +466,67 @@ function updateHoldingFormMode() {
   amountInput.step = isDollarMode ? "0.01" : "0.001";
   costLabel.textContent = isDollarMode ? "NAV at purchase" : "Avg cost";
   costInput.placeholder = isDollarMode ? "optional" : "185";
+}
+
+async function renderBudgetIdeas() {
+  const budget = Number(budgetInput.value || 0);
+  const focus = budgetFocus.value;
+  if (!budget || budget <= 0) {
+    budgetSummary.textContent = "Enter a budget above $0 to generate ideas.";
+    budgetResults.innerHTML = "";
+    return;
+  }
+
+  const symbols = budgetUniverse.map((idea) => idea.symbol);
+  budgetSummary.textContent = "Checking prices and matching ideas to your budget...";
+  budgetQuotes = await fetchQuotes(symbols, { updateStatus: false });
+
+  const candidates = budgetUniverse
+    .map((idea) => {
+      const quote = budgetQuotes[idea.symbol] || fallbackQuotes[idea.symbol] || {};
+      const price = Number(quote.price || 0);
+      const isAffordable = price > 0 && price <= budget;
+      const focusScore = focus === "balanced" || idea.tags.includes(focus) ? 2 : 0;
+      const cheapScore = price ? Math.max(0, 1 - price / Math.max(budget, 1)) : 0;
+      return {
+        ...idea,
+        price,
+        quoteName: quote.name,
+        isAffordable,
+        score: (isAffordable ? 5 : 0) + focusScore + cheapScore,
+      };
+    })
+    .filter((idea) => idea.isAffordable || idea.tags.includes("funds"))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 5);
+
+  budgetSummary.textContent = `Showing ${candidates.length} research ideas for a ${money(budget)} budget. Fractional shares may be available at some brokerages, but this list prioritizes whole-share affordability and dollar-based funds.`;
+  budgetResults.innerHTML = candidates.map(renderBudgetCard).join("");
+}
+
+function renderBudgetCard(idea) {
+  const canBuyWholeShare = idea.price > 0 && idea.price <= Number(budgetInput.value || 0);
+  const priceText = idea.price ? money(idea.price) : "quote unavailable";
+  const affordability = canBuyWholeShare ? "Within budget" : "Use dollar amount";
+  const linkUrl = idea.tags.includes("funds")
+    ? `https://finance.yahoo.com/quote/${idea.symbol}`
+    : `https://www.sec.gov/edgar/search/#/q=${encodeURIComponent(idea.symbol)}`;
+  const linkLabel = idea.tags.includes("funds") ? "Fund page" : "SEC filings";
+
+  return `
+    <article class="budget-card">
+      <header>
+        <div>
+          <strong>${idea.symbol}</strong>
+          <span>${idea.quoteName || idea.name}</span>
+        </div>
+        <em>${priceText}</em>
+      </header>
+      <span>${affordability}</span>
+      <p>${idea.why}</p>
+      <a href="${linkUrl}" target="_blank" rel="noreferrer">${linkLabel}</a>
+    </article>
+  `;
 }
 
 async function renderWatchlist() {
@@ -409,6 +621,52 @@ function renderCompany(company) {
   `;
 }
 
+async function renderSecGuide(symbol = "AAPL") {
+  const cleanSymbol = symbol.trim().toUpperCase().replace(".", "-") || "AAPL";
+  secGuideSymbol.value = cleanSymbol;
+  secReportLinks.innerHTML = `<span class="quiet-copy">Loading report links for ${cleanSymbol}...</span>`;
+
+  try {
+    const response = await fetch(`/api/company?symbol=${encodeURIComponent(cleanSymbol)}`);
+    if (!response.ok) throw new Error("Company report lookup unavailable");
+    const company = await response.json();
+    renderSecLinks(company);
+  } catch {
+    renderSecLinks({
+      symbol: cleanSymbol,
+      name: cleanSymbol,
+      links: {
+        secSearch: `https://www.sec.gov/edgar/search/#/q=${cleanSymbol}`,
+        yahoo: `https://finance.yahoo.com/quote/${cleanSymbol}`,
+      },
+    });
+  }
+
+  secStepGrid.innerHTML = secSteps
+    .map(
+      (step) => `
+        <article class="sec-step-card">
+          <strong>${step.title}</strong>
+          <span>${step.section}</span>
+          <p>${step.why}</p>
+          <span><b>Look for:</b> ${step.lookFor}</span>
+        </article>
+      `,
+    )
+    .join("");
+}
+
+function renderSecLinks(company) {
+  const links = company.links || {};
+  secReportLinks.innerHTML = `
+    <a href="${links.secSearch || `https://www.sec.gov/edgar/search/#/q=${company.symbol}`}" target="_blank" rel="noreferrer">Open SEC filings</a>
+    ${links.latest10k ? `<a href="${links.latest10k}" target="_blank" rel="noreferrer">Latest 10-K</a>` : ""}
+    ${links.latest10q ? `<a href="${links.latest10q}" target="_blank" rel="noreferrer">Latest 10-Q</a>` : ""}
+    ${links.yahoo ? `<a href="${links.yahoo}" target="_blank" rel="noreferrer">Market page</a>` : ""}
+    <span class="quiet-copy">Use the links, then read the sections below in order for ${company.symbol}${company.name ? ` - ${company.name}` : ""}.</span>
+  `;
+}
+
 function restoreChecklist() {
   const saved = JSON.parse(localStorage.getItem(storageKeys.rules) || "{}");
   document.querySelectorAll("[data-rule]").forEach((box) => {
@@ -437,8 +695,17 @@ holdingForm.addEventListener("submit", (event) => {
   refreshPortfolio();
 });
 
+tabButtons.forEach((button) => {
+  button.addEventListener("click", () => switchTab(button.dataset.tab));
+});
+
 refreshQuotes.addEventListener("click", refreshPortfolio);
 holdingType.addEventListener("change", updateHoldingFormMode);
+
+budgetForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  renderBudgetIdeas();
+});
 
 markRead.addEventListener("click", () => {
   saveReadDates([...getReadDates(), dateKey]);
@@ -460,6 +727,11 @@ companyForm.addEventListener("submit", (event) => {
   openCompany(companySymbol.value);
 });
 
+secGuideForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  renderSecGuide(secGuideSymbol.value);
+});
+
 preferenceInput.value = getPreference();
 personalizationForm.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -472,4 +744,6 @@ restoreChecklist();
 updateHoldingFormMode();
 refreshPortfolio();
 renderWatchlist();
+renderBudgetIdeas();
+renderSecGuide("AAPL");
 openCompany("AAPL");
