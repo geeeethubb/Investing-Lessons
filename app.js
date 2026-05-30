@@ -105,80 +105,312 @@ const fallbackQuotes = {
   VTI: { price: 258.2, changePercent: 0.18, name: "Vanguard Total Stock Market ETF" },
   SCHD: { price: 78.64, changePercent: 0.16, name: "Schwab U.S. Dividend Equity ETF" },
   FXAIX: { price: 192.35, changePercent: 0.2, name: "Fidelity 500 Index Fund" },
+  AMD: { price: 161.2, changePercent: 0.4, name: "Advanced Micro Devices" },
+  INTC: { price: 30.15, changePercent: -0.25, name: "Intel Corporation" },
+  UBER: { price: 68.7, changePercent: 0.18, name: "Uber Technologies" },
+  PYPL: { price: 63.8, changePercent: -0.11, name: "PayPal Holdings" },
+  SBUX: { price: 83.5, changePercent: 0.06, name: "Starbucks Corporation" },
+  NKE: { price: 92.4, changePercent: -0.08, name: "Nike Inc." },
+  WMT: { price: 67.25, changePercent: 0.1, name: "Walmart Inc." },
+  CVS: { price: 59.6, changePercent: -0.14, name: "CVS Health" },
+  NEE: { price: 71.1, changePercent: 0.04, name: "NextEra Energy" },
+  O: { price: 54.9, changePercent: 0.09, name: "Realty Income" },
+  PLTR: { price: 22.8, changePercent: 0.55, name: "Palantir Technologies" },
+  RBLX: { price: 38.1, changePercent: 0.2, name: "Roblox Corporation" },
+  SNAP: { price: 15.4, changePercent: -0.18, name: "Snap Inc." },
+  HOOD: { price: 20.2, changePercent: 0.22, name: "Robinhood Markets" },
+  GM: { price: 45.8, changePercent: 0.02, name: "General Motors" },
+  XOM: { price: 113.4, changePercent: 0.05, name: "Exxon Mobil" },
+  JPM: { price: 198.5, changePercent: 0.06, name: "JPMorgan Chase" },
+  JNJ: { price: 151.3, changePercent: 0.03, name: "Johnson & Johnson" },
+  QQQM: { price: 184.2, changePercent: 0.25, name: "Invesco NASDAQ 100 ETF" },
+  SPLG: { price: 61.8, changePercent: 0.17, name: "SPDR Portfolio S&P 500 ETF" },
+  VXUS: { price: 60.7, changePercent: 0.12, name: "Vanguard Total International Stock ETF" },
+  BND: { price: 72.1, changePercent: 0.03, name: "Vanguard Total Bond Market ETF" },
+  FZROX: { price: 18.1, changePercent: 0.16, name: "Fidelity ZERO Total Market Index Fund" },
+  FSKAX: { price: 145.2, changePercent: 0.18, name: "Fidelity Total Market Index Fund" },
 };
 
 const budgetUniverse = [
   {
     symbol: "SOFI",
     name: "SoFi Technologies",
-    tags: ["cheap", "growth", "balanced"],
+    category: "Growth stock",
+    risk: "High",
+    tags: ["cheap", "growth", "balanced", "fintech", "student", "banking"],
     why: "A lower-priced fintech stock for learning growth, banking risk, profitability, and how a popular app tries to become a durable business.",
   },
   {
     symbol: "F",
     name: "Ford",
-    tags: ["cheap", "dividend", "balanced"],
+    category: "Cyclical value",
+    risk: "Medium",
+    tags: ["cheap", "dividend", "balanced", "cars", "autos", "value"],
     why: "A familiar company with a lower share price where you can study cyclical demand, debt, EV investment, and dividends.",
   },
   {
     symbol: "T",
     name: "AT&T",
-    tags: ["cheap", "dividend"],
+    category: "Dividend stock",
+    risk: "Medium",
+    tags: ["cheap", "dividend", "income", "telecom", "stable"],
     why: "A dividend-oriented telecom to study debt, cash flow, competition, and whether a high yield is actually sustainable.",
   },
   {
     symbol: "PFE",
     name: "Pfizer",
-    tags: ["cheap", "dividend", "balanced"],
+    category: "Healthcare",
+    risk: "Medium",
+    tags: ["cheap", "dividend", "balanced", "healthcare", "defensive", "medicine"],
     why: "A healthcare stock for learning patent cliffs, drug pipelines, dividend coverage, and why revenue can change after one-time product booms.",
   },
   {
     symbol: "BAC",
     name: "Bank of America",
-    tags: ["cheap", "balanced"],
+    category: "Financial stock",
+    risk: "Medium",
+    tags: ["cheap", "balanced", "bank", "rates", "financials"],
     why: "A big bank to study interest rates, credit losses, deposits, and why banks behave differently from ordinary product companies.",
   },
   {
     symbol: "KO",
     name: "Coca-Cola",
-    tags: ["dividend", "balanced"],
+    category: "Defensive dividend",
+    risk: "Lower",
+    tags: ["dividend", "balanced", "defensive", "brand", "consumer", "stable"],
     why: "A classic brand business for studying pricing power, global distribution, margins, and steady dividend growth.",
   },
   {
     symbol: "DIS",
     name: "Disney",
-    tags: ["growth", "balanced"],
+    category: "Consumer brand",
+    risk: "Medium",
+    tags: ["growth", "balanced", "brand", "media", "streaming", "parks", "turnaround"],
     why: "A familiar company that teaches parks, streaming economics, media disruption, debt, and turnaround investing.",
   },
   {
     symbol: "NVDA",
     name: "NVIDIA",
-    tags: ["growth"],
+    category: "AI growth",
+    risk: "High",
+    tags: ["growth", "ai", "chips", "semiconductor", "tech"],
     why: "A high-expectations AI company where valuation, data-center demand, supply limits, and margins all matter.",
   },
   {
     symbol: "SCHD",
     name: "Schwab U.S. Dividend Equity ETF",
-    tags: ["funds", "dividend", "balanced"],
+    category: "Dividend ETF",
+    risk: "Medium",
+    tags: ["funds", "etf", "dividend", "income", "balanced", "diversified"],
     why: "A dividend ETF to compare against individual dividend stocks while reducing single-company risk.",
   },
   {
     symbol: "VTI",
     name: "Vanguard Total Stock Market ETF",
-    tags: ["funds", "balanced"],
+    category: "Broad ETF",
+    risk: "Medium",
+    tags: ["funds", "etf", "balanced", "index", "diversified", "beginner", "broad market"],
     why: "A broad-market ETF that works as a simple benchmark before taking extra risk on individual stocks.",
   },
   {
     symbol: "FXAIX",
     name: "Fidelity 500 Index Fund",
-    tags: ["funds"],
+    category: "Mutual fund",
+    risk: "Medium",
+    tags: ["funds", "mutual fund", "index", "fidelity", "s&p", "sp500", "beginner"],
     why: "An S&P 500 mutual fund for learning expense ratios, index exposure, and fund-style investing by dollar amount.",
   },
   {
     symbol: "AAPL",
     name: "Apple",
-    tags: ["growth", "balanced"],
+    category: "Quality growth",
+    risk: "Medium",
+    tags: ["growth", "balanced", "brand", "consumer", "tech", "cash flow"],
     why: "A consumer brand and services business where you can connect products you know to revenue, margins, and buybacks.",
+  },
+  {
+    symbol: "INTC",
+    name: "Intel",
+    category: "Turnaround tech",
+    risk: "High",
+    tags: ["cheap", "tech", "chips", "semiconductor", "turnaround", "value"],
+    why: "A lower-priced chip company for studying turnarounds, manufacturing spending, competition, and whether a legacy business can regain momentum.",
+  },
+  {
+    symbol: "UBER",
+    name: "Uber",
+    category: "Platform growth",
+    risk: "High",
+    tags: ["growth", "platform", "consumer", "transportation", "cash flow"],
+    why: "A platform business for learning network effects, operating leverage, delivery economics, and the difference between revenue growth and durable profits.",
+  },
+  {
+    symbol: "PYPL",
+    name: "PayPal",
+    category: "Fintech value",
+    risk: "Medium",
+    tags: ["cheap", "value", "fintech", "payments", "turnaround"],
+    why: "A payments company where you can study competition, margins, user growth, and whether a cheaper valuation reflects opportunity or weakness.",
+  },
+  {
+    symbol: "SBUX",
+    name: "Starbucks",
+    category: "Consumer brand",
+    risk: "Medium",
+    tags: ["brand", "consumer", "dividend", "global", "familiar"],
+    why: "A familiar brand for learning same-store sales, international growth, labor costs, and pricing power.",
+  },
+  {
+    symbol: "NKE",
+    name: "Nike",
+    category: "Consumer brand",
+    risk: "Medium",
+    tags: ["brand", "consumer", "turnaround", "global", "apparel"],
+    why: "A brand-heavy business for studying inventory, margins, direct-to-consumer strategy, and whether brand strength translates into growth.",
+  },
+  {
+    symbol: "WMT",
+    name: "Walmart",
+    category: "Defensive retail",
+    risk: "Lower",
+    tags: ["defensive", "consumer", "retail", "stable", "dividend"],
+    why: "A defensive retailer for learning scale, grocery demand, operating margins, and how large companies grow slowly but steadily.",
+  },
+  {
+    symbol: "CVS",
+    name: "CVS Health",
+    category: "Healthcare value",
+    risk: "Medium",
+    tags: ["cheap", "healthcare", "value", "defensive", "debt"],
+    why: "A healthcare business for studying debt, insurance margins, pharmacy economics, and why cheap stocks can still have real risks.",
+  },
+  {
+    symbol: "NEE",
+    name: "NextEra Energy",
+    category: "Utility / renewables",
+    risk: "Medium",
+    tags: ["dividend", "utility", "renewable", "stable", "income"],
+    why: "A utility and renewables company for studying regulated returns, interest-rate sensitivity, capital spending, and dividends.",
+  },
+  {
+    symbol: "O",
+    name: "Realty Income",
+    category: "REIT income",
+    risk: "Medium",
+    tags: ["dividend", "income", "reit", "real estate", "monthly dividend"],
+    why: "A REIT for learning how real estate stocks use rent, debt, occupancy, and interest rates to support dividends.",
+  },
+  {
+    symbol: "PLTR",
+    name: "Palantir",
+    category: "Speculative software",
+    risk: "High",
+    tags: ["cheap", "growth", "ai", "software", "government", "speculative"],
+    why: "A high-interest software company for studying government contracts, commercial growth, AI narratives, margins, and valuation risk.",
+  },
+  {
+    symbol: "RBLX",
+    name: "Roblox",
+    category: "Speculative consumer tech",
+    risk: "High",
+    tags: ["growth", "gaming", "consumer", "speculative", "younger users"],
+    why: "A consumer platform for learning bookings, user engagement, losses, and how hard it can be to turn attention into durable profits.",
+  },
+  {
+    symbol: "SNAP",
+    name: "Snap",
+    category: "Speculative social media",
+    risk: "High",
+    tags: ["cheap", "social media", "advertising", "speculative", "consumer"],
+    why: "A smaller social media stock for studying ad cycles, user growth, competition, and why low share price does not mean low risk.",
+  },
+  {
+    symbol: "HOOD",
+    name: "Robinhood",
+    category: "Fintech platform",
+    risk: "High",
+    tags: ["cheap", "fintech", "brokerage", "crypto", "student", "platform"],
+    why: "A brokerage platform for learning transaction revenue, interest income, crypto exposure, and regulatory risk.",
+  },
+  {
+    symbol: "GM",
+    name: "General Motors",
+    category: "Cyclical value",
+    risk: "Medium",
+    tags: ["cheap", "cars", "autos", "value", "cyclical"],
+    why: "An automaker for comparing valuation, debt, buybacks, EV investments, and how cyclical companies handle downturns.",
+  },
+  {
+    symbol: "XOM",
+    name: "Exxon Mobil",
+    category: "Energy dividend",
+    risk: "Medium",
+    tags: ["dividend", "energy", "oil", "cash flow", "cyclical"],
+    why: "An energy major for learning commodity cycles, dividends, buybacks, capital spending, and geopolitical exposure.",
+  },
+  {
+    symbol: "JPM",
+    name: "JPMorgan Chase",
+    category: "Large bank",
+    risk: "Medium",
+    tags: ["bank", "financials", "dividend", "quality", "stable"],
+    why: "A large bank for studying deposits, credit quality, interest rates, capital ratios, and management quality.",
+  },
+  {
+    symbol: "JNJ",
+    name: "Johnson & Johnson",
+    category: "Defensive healthcare",
+    risk: "Lower",
+    tags: ["healthcare", "dividend", "defensive", "stable", "quality"],
+    why: "A defensive healthcare company for studying product diversity, litigation risk, dividends, and steady cash generation.",
+  },
+  {
+    symbol: "SPLG",
+    name: "SPDR Portfolio S&P 500 ETF",
+    category: "Low-cost ETF",
+    risk: "Medium",
+    tags: ["funds", "etf", "index", "s&p", "sp500", "beginner", "low cost"],
+    why: "A lower-priced S&P 500 ETF for learning broad exposure, expense ratios, and why funds can be easier than picking one company.",
+  },
+  {
+    symbol: "QQQM",
+    name: "Invesco NASDAQ 100 ETF",
+    category: "Growth ETF",
+    risk: "High",
+    tags: ["funds", "etf", "growth", "tech", "index", "nasdaq"],
+    why: "A tech-heavy ETF for comparing diversified growth exposure against buying one expensive tech stock.",
+  },
+  {
+    symbol: "VXUS",
+    name: "Vanguard Total International Stock ETF",
+    category: "International ETF",
+    risk: "Medium",
+    tags: ["funds", "etf", "international", "diversified", "global"],
+    why: "An international ETF for learning why diversification can include countries and currencies, not just U.S. companies.",
+  },
+  {
+    symbol: "BND",
+    name: "Vanguard Total Bond Market ETF",
+    category: "Bond ETF",
+    risk: "Lower",
+    tags: ["funds", "etf", "bond", "income", "safer", "defensive"],
+    why: "A bond ETF for learning how fixed income behaves differently from stocks and why risk level matters for short-term money.",
+  },
+  {
+    symbol: "FZROX",
+    name: "Fidelity ZERO Total Market Index Fund",
+    category: "Mutual fund",
+    risk: "Medium",
+    tags: ["funds", "mutual fund", "index", "fidelity", "zero fee", "beginner"],
+    why: "A mutual fund example for learning dollar-based fund investing, expense ratios, and broad market exposure.",
+  },
+  {
+    symbol: "FSKAX",
+    name: "Fidelity Total Market Index Fund",
+    category: "Mutual fund",
+    risk: "Medium",
+    tags: ["funds", "mutual fund", "index", "fidelity", "total market"],
+    why: "A total-market mutual fund for comparing broad diversification, costs, and long-term core holdings.",
   },
 ];
 
@@ -572,6 +804,7 @@ function updateHoldingFormMode() {
 async function renderBudgetIdeas() {
   const budget = Number(budgetInput.value || 0);
   const focus = budgetFocus.value;
+  const tokens = getPreferenceTokens();
   if (!budget || budget <= 0) {
     budgetSummary.textContent = "Enter a budget above $0 to generate ideas.";
     budgetResults.innerHTML = "";
@@ -582,37 +815,62 @@ async function renderBudgetIdeas() {
   budgetSummary.textContent = "Checking prices and matching ideas to your budget...";
   budgetQuotes = await fetchQuotes(symbols, { updateStatus: false });
 
-  const candidates = budgetUniverse
+  const ranked = budgetUniverse
     .map((idea) => {
       const quote = budgetQuotes[idea.symbol] || fallbackQuotes[idea.symbol] || {};
       const price = Number(quote.price || 0);
+      const isFund = idea.tags.includes("funds") || idea.tags.includes("mutual fund") || idea.tags.includes("etf");
       const isAffordable = price > 0 && price <= budget;
-      const focusScore = focus === "balanced" || idea.tags.includes(focus) ? 2 : 0;
+      const focusScore = focus === "balanced" || idea.tags.includes(focus) ? 5 : 0;
+      const preferenceScore = getMatchScore(idea, tokens) * 4;
       const cheapScore = price ? Math.max(0, 1 - price / Math.max(budget, 1)) : 0;
       return {
         ...idea,
         price,
         quoteName: quote.name,
+        isFund,
         isAffordable,
-        score: (isAffordable ? 5 : 0) + focusScore + cheapScore,
+        score: (isAffordable ? 8 : 0) + (isFund ? 3 : 0) + focusScore + preferenceScore + cheapScore,
       };
     })
-    .filter((idea) => idea.isAffordable || idea.tags.includes("funds"))
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 5);
+    .sort((a, b) => b.score - a.score);
 
-  budgetSummary.textContent = `Showing ${candidates.length} research ideas for a ${money(budget)} budget. Fractional shares may be available at some brokerages, but this list prioritizes whole-share affordability and dollar-based funds.`;
-  budgetResults.innerHTML = candidates.map(renderBudgetCard).join("");
+  const affordable = ranked.filter((idea) => idea.isAffordable && !idea.isFund).slice(0, 5);
+  const funds = ranked.filter((idea) => idea.isFund).slice(0, 5);
+  const fractional = ranked.filter((idea) => !idea.isAffordable && !idea.isFund).slice(0, 5);
+
+  budgetSummary.textContent = `Matched a ${money(budget)} budget${tokens.length ? ` and your mood: "${getPreference()}"` : ""}. Whole-share ideas, dollar-based funds, and fractional-share watchlist ideas are separated below.`;
+  budgetResults.innerHTML = [
+    renderBudgetCategory("Whole-share ideas within budget", affordable),
+    renderBudgetCategory("Funds or ETFs to research by dollar amount", funds),
+    renderBudgetCategory("Stretch ideas for fractional-share research", fractional),
+  ].join("");
+}
+
+function renderBudgetCategory(title, ideas) {
+  if (!ideas.length) return "";
+  return `
+    <section class="budget-category">
+      <div class="category-heading">
+        <h3>${title}</h3>
+        <span>${ideas.length} ideas</span>
+      </div>
+      <div class="budget-card-grid">
+        ${ideas.map(renderBudgetCard).join("")}
+      </div>
+    </section>
+  `;
 }
 
 function renderBudgetCard(idea) {
   const canBuyWholeShare = idea.price > 0 && idea.price <= Number(budgetInput.value || 0);
   const priceText = idea.price ? money(idea.price) : "quote unavailable";
-  const affordability = canBuyWholeShare ? "Within budget" : "Use dollar amount";
-  const linkUrl = idea.tags.includes("funds")
+  const affordability = canBuyWholeShare ? "Within budget" : idea.isFund ? "Research by dollar amount" : "Consider only if fractional shares fit";
+  const linkUrl = idea.isFund
     ? `https://finance.yahoo.com/quote/${idea.symbol}`
     : `https://www.sec.gov/edgar/search/#/q=${encodeURIComponent(idea.symbol)}`;
-  const linkLabel = idea.tags.includes("funds") ? "Fund page" : "SEC filings";
+  const linkLabel = idea.isFund ? "Fund page" : "SEC filings";
+  const matchText = [idea.category, `${idea.risk} risk`].filter(Boolean).join(" - ");
 
   return `
     <article class="budget-card">
@@ -624,6 +882,7 @@ function renderBudgetCard(idea) {
         <em>${priceText}</em>
       </header>
       <span>${affordability}</span>
+      <span>${matchText}</span>
       <p>${idea.why}</p>
       <a href="${linkUrl}" target="_blank" rel="noreferrer">${linkLabel}</a>
     </article>
@@ -646,41 +905,78 @@ function getPreference() {
   return localStorage.getItem(storageKeys.preference) || "";
 }
 
-function personalizeIdeas(defaultIdeas) {
-  const preference = getPreference().trim();
-  if (!preference) {
-    personalizationSummary.textContent = "Using the default beginner research list.";
-    return defaultIdeas;
-  }
+function getPreferenceTokens() {
+  return getPreference()
+    .toLowerCase()
+    .split(/[^a-z0-9&]+/)
+    .filter((word) => word.length > 2);
+}
 
-  const normalized = preference.toLowerCase();
-  const matches = personalizedIdeas.filter((idea) => idea.tags.some((tag) => normalized.includes(tag)));
-  const selected = matches.length ? matches : personalizedIdeas.filter((idea) => normalized.split(/\W+/).some((word) => idea.tags.join(" ").includes(word)));
-  const ideas = [...selected, ...defaultIdeas].filter(
+function getIdeaSearchText(idea) {
+  return [idea.symbol, idea.name, idea.category, idea.risk, idea.angle, idea.why, ...(idea.tags || [])]
+    .join(" ")
+    .toLowerCase();
+}
+
+function getMatchScore(idea, tokens) {
+  if (!tokens.length) return 0;
+  const searchText = getIdeaSearchText(idea);
+  return tokens.reduce((score, token) => score + (searchText.includes(token) ? 1 : 0), 0);
+}
+
+function getCombinedResearchUniverse(extraIdeas = []) {
+  const normalizedExtra = extraIdeas.map((idea) => ({
+    ...idea,
+    category: idea.category || "Daily idea",
+    risk: idea.risk || "Varies",
+    tags: idea.tags || ["balanced"],
+  }));
+  return [...budgetUniverse, ...personalizedIdeas, ...normalizedExtra].filter(
     (idea, index, list) => list.findIndex((candidate) => candidate.symbol === idea.symbol) === index,
   );
+}
 
-  personalizationSummary.textContent = selected.length
-    ? `Personalized around: "${preference}"`
-    : `No exact match for "${preference}" yet, so I mixed in broad beginner ideas.`;
+function personalizeIdeas(defaultIdeas) {
+  const preference = getPreference().trim();
+  const tokens = getPreferenceTokens();
+  const dayOffset = Math.floor(Date.now() / 86400000) % 7;
+  const universe = getCombinedResearchUniverse(defaultIdeas);
 
-  return ideas.slice(0, 3);
+  const ranked = universe
+    .map((idea, index) => ({
+      ...idea,
+      score:
+        getMatchScore(idea, tokens) * 6 +
+        (idea.tags?.includes("balanced") ? 2 : 0) +
+        ((index + dayOffset) % 5 === 0 ? 1 : 0),
+    }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3);
+
+  personalizationSummary.textContent = preference
+    ? `Personalized around: "${preference}".`
+    : "Using a rotating beginner research mix. Add a mood to steer it.";
+
+  return ranked;
 }
 
 function renderIdeas(ideas) {
   watchlist.innerHTML = ideas
     .map(
-      (idea) => `
-        <article class="stock-card">
-          <div>
-            <strong>${idea.symbol}</strong>
-            <span>${idea.name || ""}</span>
-          </div>
-          <p>${idea.why}</p>
-          <span>${idea.angle}</span>
-          <a href="${idea.linkUrl || `https://www.sec.gov/edgar/search/#/q=${encodeURIComponent(idea.symbol)}`}" target="_blank" rel="noreferrer">${idea.linkLabel || "SEC filings"}</a>
-        </article>
-      `,
+      (idea) => {
+        const descriptor = idea.angle || [idea.category, idea.risk ? `${idea.risk} risk` : ""].filter(Boolean).join(" - ");
+        return `
+          <article class="stock-card">
+            <div>
+              <strong>${idea.symbol}</strong>
+              <span>${idea.name || ""}</span>
+            </div>
+            <p>${idea.why}</p>
+            <span>${descriptor}</span>
+            <a href="${idea.linkUrl || `https://www.sec.gov/edgar/search/#/q=${encodeURIComponent(idea.symbol)}`}" target="_blank" rel="noreferrer">${idea.linkLabel || "SEC filings"}</a>
+          </article>
+        `;
+      },
     )
     .join("");
 }
@@ -852,6 +1148,7 @@ personalizationForm.addEventListener("submit", (event) => {
   event.preventDefault();
   localStorage.setItem(storageKeys.preference, preferenceInput.value.trim());
   renderWatchlist();
+  renderBudgetIdeas();
 });
 
 renderLesson();

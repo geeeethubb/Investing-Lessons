@@ -333,6 +333,7 @@ select {
 .stock-grid,
 .rules-list,
 .budget-results,
+.budget-card-grid,
 .sec-step-grid {
   display: grid;
   gap: 0.75rem;
@@ -400,7 +401,37 @@ select {
 }
 
 .budget-results {
+  grid-template-columns: 1fr;
+  gap: 1.1rem;
+}
+
+.budget-card-grid {
   grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+}
+
+.budget-category {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.category-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 0.55rem;
+}
+
+.category-heading h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.category-heading span {
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 800;
 }
 
 .stock-card {
