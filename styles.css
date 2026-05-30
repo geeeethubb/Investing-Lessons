@@ -222,6 +222,18 @@ h2 {
   gap: 0.7rem;
 }
 
+.lesson-actions {
+  grid-template-columns: 2.85rem auto 2.85rem;
+  align-items: center;
+  justify-content: start;
+  margin-top: 1.35rem;
+}
+
+.lesson-actions .primary-action {
+  min-width: 8rem;
+  width: auto;
+}
+
 .primary-action,
 .ghost-action,
 .icon-button,
@@ -555,7 +567,7 @@ textarea {
   }
 
   .lesson-actions {
-    grid-template-columns: repeat(3, auto);
+    grid-template-columns: 2.85rem minmax(7.5rem, auto) 2.85rem;
     justify-content: start;
   }
 }
