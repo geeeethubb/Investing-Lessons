@@ -453,6 +453,34 @@ const secSteps = [
   },
 ];
 
+const focusProfiles = {
+  balanced: {
+    wholeShareTags: ["balanced", "quality", "consumer", "healthcare", "bank"],
+    fundTags: ["beginner", "index", "diversified", "balanced"],
+    stretchTags: ["growth", "quality", "tech"],
+  },
+  growth: {
+    wholeShareTags: ["growth", "tech", "ai", "software", "platform", "consumer"],
+    fundTags: ["growth", "tech", "nasdaq", "etf"],
+    stretchTags: ["growth", "ai", "semiconductor", "software"],
+  },
+  dividend: {
+    wholeShareTags: ["dividend", "income", "stable", "defensive", "reit", "utility"],
+    fundTags: ["dividend", "income", "bond", "defensive"],
+    stretchTags: ["dividend", "quality", "cash flow"],
+  },
+  funds: {
+    wholeShareTags: ["balanced", "defensive"],
+    fundTags: ["funds", "mutual fund", "etf", "index", "bond", "international"],
+    stretchTags: ["funds", "index", "growth"],
+  },
+  cheap: {
+    wholeShareTags: ["cheap", "value", "student", "turnaround"],
+    fundTags: ["low cost", "zero fee", "beginner"],
+    stretchTags: ["cheap", "growth", "speculative"],
+  },
+};
+
 const fallbackIdeas = [
   {
     symbol: "AAPL",
@@ -551,6 +579,10 @@ const dateKey = getLocalDateKey();
 let currentLesson = getInitialLessonIndex();
 let quotes = {};
 let budgetQuotes = {};
+let budgetMixSeed = 0;
+let researchMixSeed = 0;
+let budgetRenderRequest = 0;
+let liveRenderTimer;
 
 const tabButtons = document.querySelectorAll("[data-tab]");
 const tabPanels = document.querySelectorAll("[data-tab-panel]");
@@ -586,6 +618,8 @@ const budgetInput = document.querySelector("#budget-input");
 const budgetFocus = document.querySelector("#budget-focus");
 const budgetSummary = document.querySelector("#budget-summary");
 const budgetResults = document.querySelector("#budget-results");
+const budgetRefresh = document.querySelector("#budget-refresh");
+const watchlistRefresh = document.querySelector("#watchlist-refresh");
 const secGuideForm = document.querySelector("#sec-guide-form");
 const secGuideSymbol = document.querySelector("#sec-guide-symbol");
 const secReportLinks = document.querySelector("#sec-report-links");
@@ -802,6 +836,7 @@ function updateHoldingFormMode() {
 }
 
 async function renderBudgetIdeas() {
+  const requestId = ++budgetRenderRequest;
   const budget = Number(budgetInput.value || 0);
   const focus = budgetFocus.value;
   const tokens = getPreferenceTokens();
@@ -814,37 +849,75 @@ async function renderBudgetIdeas() {
   const symbols = budgetUniverse.map((idea) => idea.symbol);
   budgetSummary.textContent = "Checking prices and matching ideas to your budget...";
   budgetQuotes = await fetchQuotes(symbols, { updateStatus: false });
+  if (requestId !== budgetRenderRequest) return;
 
+  const profile = focusProfiles[focus] || focusProfiles.balanced;
   const ranked = budgetUniverse
     .map((idea) => {
       const quote = budgetQuotes[idea.symbol] || fallbackQuotes[idea.symbol] || {};
       const price = Number(quote.price || 0);
       const isFund = idea.tags.includes("funds") || idea.tags.includes("mutual fund") || idea.tags.includes("etf");
       const isAffordable = price > 0 && price <= budget;
-      const focusScore = focus === "balanced" || idea.tags.includes(focus) ? 5 : 0;
+      const focusScore = getTagScore(idea, [...profile.wholeShareTags, ...profile.fundTags, ...profile.stretchTags]);
       const preferenceScore = getMatchScore(idea, tokens) * 4;
       const cheapScore = price ? Math.max(0, 1 - price / Math.max(budget, 1)) : 0;
+      const rotationScore = getRotationScore(idea.symbol, budgetMixSeed);
       return {
         ...idea,
         price,
         quoteName: quote.name,
         isFund,
         isAffordable,
-        score: (isAffordable ? 8 : 0) + (isFund ? 3 : 0) + focusScore + preferenceScore + cheapScore,
+        score: (isAffordable ? 8 : 0) + (isFund ? 3 : 0) + focusScore + preferenceScore + cheapScore + rotationScore,
       };
     })
     .sort((a, b) => b.score - a.score);
 
-  const affordable = ranked.filter((idea) => idea.isAffordable && !idea.isFund).slice(0, 5);
-  const funds = ranked.filter((idea) => idea.isFund).slice(0, 5);
-  const fractional = ranked.filter((idea) => !idea.isAffordable && !idea.isFund).slice(0, 5);
+  const affordable = pickByProfile(
+    ranked.filter((idea) => idea.isAffordable && !idea.isFund),
+    profile.wholeShareTags,
+    5,
+  );
+  const funds = pickByProfile(
+    ranked.filter((idea) => idea.isFund),
+    profile.fundTags,
+    5,
+  );
+  const fractional = pickByProfile(
+    ranked.filter((idea) => !idea.isAffordable && !idea.isFund),
+    profile.stretchTags,
+    5,
+  );
 
-  budgetSummary.textContent = `Matched a ${money(budget)} budget${tokens.length ? ` and your mood: "${getPreference()}"` : ""}. Whole-share ideas, dollar-based funds, and fractional-share watchlist ideas are separated below.`;
+  budgetSummary.textContent = `Matched a ${money(budget)} budget, ${budgetFocus.options[budgetFocus.selectedIndex].text.toLowerCase()}${tokens.length ? `, and your mood: "${getPreference()}"` : ""}. Use New mix for another set.`;
   budgetResults.innerHTML = [
     renderBudgetCategory("Whole-share ideas within budget", affordable),
     renderBudgetCategory("Funds or ETFs to research by dollar amount", funds),
     renderBudgetCategory("Stretch ideas for fractional-share research", fractional),
   ].join("");
+}
+
+function getTagScore(idea, tags) {
+  return tags.reduce((score, tag) => score + (idea.tags?.includes(tag) ? 3 : 0), 0);
+}
+
+function getRotationScore(symbol, seed) {
+  const hash = [...symbol].reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  return ((hash + seed * 17) % 11) / 5;
+}
+
+function pickByProfile(candidates, profileTags, limit) {
+  const preferred = candidates.filter((idea) => profileTags.some((tag) => idea.tags?.includes(tag)));
+  const fallback = candidates.filter((idea) => !preferred.includes(idea));
+  return [...preferred, ...fallback].slice(0, limit);
+}
+
+function scheduleLiveRecommendationRender() {
+  window.clearTimeout(liveRenderTimer);
+  liveRenderTimer = window.setTimeout(() => {
+    renderWatchlist();
+    renderBudgetIdeas();
+  }, 250);
 }
 
 function renderBudgetCategory(title, ideas) {
@@ -902,7 +975,7 @@ async function renderWatchlist() {
 }
 
 function getPreference() {
-  return localStorage.getItem(storageKeys.preference) || "";
+  return preferenceInput?.value?.trim() || localStorage.getItem(storageKeys.preference) || "";
 }
 
 function getPreferenceTokens() {
@@ -939,16 +1012,17 @@ function getCombinedResearchUniverse(extraIdeas = []) {
 function personalizeIdeas(defaultIdeas) {
   const preference = getPreference().trim();
   const tokens = getPreferenceTokens();
-  const dayOffset = Math.floor(Date.now() / 86400000) % 7;
+  const dayOffset = (Math.floor(Date.now() / 86400000) + researchMixSeed) % 13;
   const universe = getCombinedResearchUniverse(defaultIdeas);
 
   const ranked = universe
     .map((idea, index) => ({
       ...idea,
       score:
-        getMatchScore(idea, tokens) * 6 +
+        getMatchScore(idea, tokens) * 10 +
         (idea.tags?.includes("balanced") ? 2 : 0) +
-        ((index + dayOffset) % 5 === 0 ? 1 : 0),
+        getRotationScore(idea.symbol, dayOffset) +
+        ((index + dayOffset) % 7 === 0 ? 2 : 0),
     }))
     .sort((a, b) => b.score - a.score)
     .slice(0, 3);
@@ -1101,6 +1175,18 @@ holdingType.addEventListener("change", updateHoldingFormMode);
 
 budgetForm.addEventListener("submit", (event) => {
   event.preventDefault();
+  budgetMixSeed += 1;
+  renderBudgetIdeas();
+});
+
+budgetRefresh.addEventListener("click", () => {
+  budgetMixSeed += 1;
+  renderBudgetIdeas();
+});
+
+budgetInput.addEventListener("input", () => scheduleLiveRecommendationRender());
+budgetFocus.addEventListener("change", () => {
+  budgetMixSeed += 1;
   renderBudgetIdeas();
 });
 
@@ -1147,8 +1233,20 @@ preferenceInput.value = getPreference();
 personalizationForm.addEventListener("submit", (event) => {
   event.preventDefault();
   localStorage.setItem(storageKeys.preference, preferenceInput.value.trim());
+  researchMixSeed += 1;
+  budgetMixSeed += 1;
   renderWatchlist();
   renderBudgetIdeas();
+});
+
+preferenceInput.addEventListener("input", () => {
+  localStorage.setItem(storageKeys.preference, preferenceInput.value.trim());
+  scheduleLiveRecommendationRender();
+});
+
+watchlistRefresh.addEventListener("click", () => {
+  researchMixSeed += 1;
+  renderWatchlist();
 });
 
 renderLesson();

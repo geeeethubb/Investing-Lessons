@@ -101,7 +101,10 @@
                 <option value="cheap">Lower share prices</option>
               </select>
             </div>
-            <button class="primary-action" type="submit">Find 5 ideas</button>
+            <div class="form-actions">
+              <button class="primary-action" type="submit">Find ideas</button>
+              <button class="ghost-action" id="budget-refresh" type="button">New mix</button>
+            </div>
           </form>
           <p class="quiet-copy" id="budget-summary">Enter a budget to generate research ideas. These are not buy recommendations.</p>
           <div class="budget-results" id="budget-results"></div>
@@ -117,6 +120,7 @@
             </div>
             <span id="watchlist-date"></span>
           </div>
+          <button class="ghost-action section-action" id="watchlist-refresh" type="button">New research mix</button>
           <div class="stock-grid" id="watchlist"></div>
         </section>
 
